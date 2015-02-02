@@ -1,29 +1,51 @@
 #!/usr/bin/python
-#
-# Block header comment
-#
-#
-import sys, imp, atexit
-sys.path.append("/home/courses/cs3214/software/pexpect-dpty/");
-import pexpect, shellio, signal, time, os, re, proc_check
+from testutil import *
+from tempfile import mkstemp
 
-#Ensure the shell process is terminated
-def force_shell_termination(shell_process):
-	c.close(force=True)
+setup_tests()
+    
+_, tmpfile = mkstemp()
+testdata = 'this is a simple test'
+with open(tmpfile, 'w') as fd:
+    fd.write(testdata)
 
-#pulling in the regular expression and other definitions
-definitions_scriptname = sys.argv[1]
-def_module = imp.load_source('', definitions_scriptname)
-logfile = None
-if hasattr(def_module, 'logfile'):
-    logfile = def_module.logfile
+message = '''Simple IO redirect input test.
+Sets up a tmp file and writes to it, makes sure your output matches.
+cat < tmpfile
+rev < tmpfile
 
-#spawn an instance of the shell
-c = pexpect.spawn(def_module.shell, drainpty=True, logfile=logfile)
-atexit.register(force_shell_termination, shell_process=c)
+Overwrite file
+wc -c < tmpfile
+'''
+
+sendline('cat < {0}'.format(tmpfile))
+expect(testdata, message)
+
+sendline('rev < {0}'.format(tmpfile))
+expect('tset elpmis a si siht', message)
+
+with open(tmpfile) as fd:
+    assert fd.read() == 'this is a simple test'
+
+with open(tmpfile, 'w') as fd:
+    fd.write('overwrite')
+
+sendline('wc -c < {0}'.format(tmpfile))
+expect('9')
 
 
-assert 1 == 0, "Unimplemented functionality"
+os.unlink(tmpfile)
+
+message = '''Test that file descriptors are not leaked into child
+processes. Only the file descriptors 0, 1, and 2 (stdin, stdout, stderr)
+should be open. If you don't call close() in the proper locations this
+test will fail.
+'''
+sendline('sleep 100 < /dev/null &')
+job = parse_bg_status()
+
+# The given shell code leaves fd 3 open. This should be fixed (marked as clo_exec)
+assert_correct_fds(job.pid, message)
 
 
-shellio.success()
+test_success()

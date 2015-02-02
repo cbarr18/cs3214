@@ -1,29 +1,54 @@
 #!/usr/bin/python
-#
-# Block header comment
-#
-#
-import sys, imp, atexit
-sys.path.append("/home/courses/cs3214/software/pexpect-dpty/");
-import pexpect, shellio, signal, time, os, re, proc_check
+from testutil import *
+from tempfile import mkstemp
 
-#Ensure the shell process is terminated
-def force_shell_termination(shell_process):
-	c.close(force=True)
-
-#pulling in the regular expression and other definitions
-definitions_scriptname = sys.argv[1]
-def_module = imp.load_source('', definitions_scriptname)
-logfile = None
-if hasattr(def_module, 'logfile'):
-    logfile = def_module.logfile
-
-#spawn an instance of the shell
-c = pexpect.spawn(def_module.shell, drainpty=True, logfile=logfile)
-atexit.register(force_shell_termination, shell_process=c)
+setup_tests()
 
 
-assert 1 == 0, "Unimplemented functionality"
+_, tmpfile = mkstemp()
+
+expect_prompt()
+
+message = '''Simple IO redirect append test.
+Makes sure your program actually creates the file, not just
+appending to existing.
+
+echo b >> tmpfile
+echo a >> tmpfile
+'''
+
+sendline('echo first line >> {0}'.format(tmpfile))
+expect_prompt()
+
+with open(tmpfile) as fd:
+    data = fd.read()
+    assert 'first line' == data.strip()
 
 
-shellio.success()
+sendline('echo second line >> {0}'.format(tmpfile))
+expect_prompt()
+
+with open(tmpfile) as fd:
+    data = fd.read()
+    assert 'first line\nsecond line' == data.strip()
+
+os.unlink(tmpfile)
+
+sendline('echo new line >> {0}'.format(tmpfile))
+expect_prompt()
+
+with open(tmpfile) as fd:
+    data = fd.read()
+    assert 'new line' == data.strip()
+
+os.unlink(tmpfile)
+
+with open(tmpfile, 'w') as fd:
+    fd.write('now I create the data\n')
+
+sendline('echo and you append >> {0}'.format(tmpfile))
+expect_prompt()
+with open(tmpfile) as fd:
+    assert 'now I create the data\nand you append' == fd.read().strip()
+
+test_success()

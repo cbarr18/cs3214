@@ -1,29 +1,46 @@
 #!/usr/bin/python
-#
-# Block header comment
-#
-#
-import sys, imp, atexit
-sys.path.append("/home/courses/cs3214/software/pexpect-dpty/");
-import pexpect, shellio, signal, time, os, re, proc_check
+from testutil import *
 
-#Ensure the shell process is terminated
-def force_shell_termination(shell_process):
-	c.close(force=True)
+setup_tests()
 
-#pulling in the regular expression and other definitions
-definitions_scriptname = sys.argv[1]
-def_module = imp.load_source('', definitions_scriptname)
-logfile = None
-if hasattr(def_module, 'logfile'):
-    logfile = def_module.logfile
+    
+message = '''Test very simple pipe application:
+echo hello | rev'''
 
-#spawn an instance of the shell
-c = pexpect.spawn(def_module.shell, drainpty=True, logfile=logfile)
-atexit.register(force_shell_termination, shell_process=c)
+sendline('echo hello | rev')
+expect('olleh', message)
+
+message = '''Send some words through sed for correct subs:
+echo hello apple | sed s/apple/wormhole/'''
+
+sendline('echo hello apple | sed s/apple/wormhole/')
+expect('hello wormhole', message)
+
+message = '''Test that programs are actually ran at the same time
+Pipes are buffered, but only to a certain point (64K on Linux)
+so if no program consumes the data, after 64K the program will
+block on write() because the pipe is full.
+
+If your shell does not start programs simultaneously
+(eg: you fork() -> wait() -> fork() -> wait()) this test
+will fail.
+'''
+
+sendline('head -c 1000000 /dev/urandom | wc -c')
+expect('100000', message)
+expect_prompt(message)
+
+message = '''Test that file descriptors are not leaked into child
+processes. Only the file descriptors 0, 1, and 2 (stdin, stdout, stderr)
+should be open. If you don't call close() in the proper locations this
+test will fail.
+'''
+sendline('sleep 100 | sleep 100 &')
+job = parse_bg_status()
+
+# The given shell code leaves fd 3 open. This should be fixed (marked as clo_exec)
+assert_correct_fds(job.pid, message)
 
 
-assert 1 == 0, "Unimplemented functionality"
 
-
-shellio.success()
+test_success()

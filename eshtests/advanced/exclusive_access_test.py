@@ -1,29 +1,76 @@
 #!/usr/bin/python
-#
-# Block header comment
-#
-#
-import sys, imp, atexit
-sys.path.append("/home/courses/cs3214/software/pexpect-dpty/");
-import pexpect, shellio, signal, time, os, re, proc_check
+"""
+Test for 'exclusive access' of the terminal by
+playing with vim and nano.
 
-#Ensure the shell process is terminated
-def force_shell_termination(shell_process):
-	c.close(force=True)
+Tests simply opening and typing,
+then some background and job control with exclusive access
+to make sure you maintain proper terminal state.
+"""
 
-#pulling in the regular expression and other definitions
-definitions_scriptname = sys.argv[1]
-def_module = imp.load_source('', definitions_scriptname)
-logfile = None
-if hasattr(def_module, 'logfile'):
-    logfile = def_module.logfile
-
-#spawn an instance of the shell
-c = pexpect.spawn(def_module.shell, drainpty=True, logfile=logfile)
-
-atexit.register(force_shell_termination, shell_process=c)
-
-assert 1 == 0, "Unimplemented functionality"
+from testutil import *
+from tempfile import mkstemp
+setup_tests()
 
 
-shellio.success()
+def expect_stopped(command):
+    run_builtin('jobs')
+
+    job = parse_job_line()
+
+    assert command in job.command, 'Job was not: {0}'.format(command)
+    assert 'stopped' in job.status.lower(), 'Vim not stopped'
+    expect_prompt()
+
+
+_, tmpfile = mkstemp()
+# Start nano
+sendline('nano {0}'.format(tmpfile))
+wait_for_fg_child()
+
+# Quit out to make sure nano can read keys
+sendline('test that it works')
+time.sleep(0.5)
+sendcontrol('x')
+time.sleep(0.5)
+sendline('y\r')
+expect_prompt()
+
+with open(tmpfile) as fd:
+    assert 'test that it works' in fd.read()
+os.unlink(tmpfile)
+
+
+# Assert that the shell has regained control
+
+
+# Try to start vim in the background
+# Should stop and wait for exclusive control
+sendline('vim -u NONE &')
+expect_prompt()
+time.sleep(0.5)
+expect_stopped('vim')
+
+# Send vim that was stopped into the foreground
+run_builtin('fg', '1')
+wait_for_fg_child()
+
+
+# Stop the currently running vim
+sendcontrol('z')
+expect_prompt()
+
+expect_stopped('vim')
+
+# Send it back into the foreground and try and quit it.
+run_builtin('fg', '1')
+
+wait_for_fg_child()
+
+sendline(':q')
+
+# See if shell correctly regains control
+expect_prompt()
+
+test_success()
+

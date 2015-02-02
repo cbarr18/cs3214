@@ -1,29 +1,52 @@
 #!/usr/bin/python
-#
-# Block header comment
-#
-#
-import sys, imp, atexit
-sys.path.append("/home/courses/cs3214/software/pexpect-dpty/");
-import pexpect, shellio, signal, time, os, re, proc_check
+from testutil import *
+from tempfile import mkstemp
 
-#Ensure the shell process is terminated
-def force_shell_termination(shell_process):
-	c.close(force=True)
+setup_tests()
+   
+expect_prompt()
 
-#pulling in the regular expression and other definitions
-definitions_scriptname = sys.argv[1]
-def_module = imp.load_source('', definitions_scriptname)
-logfile = None
-if hasattr(def_module, 'logfile'):
-    logfile = def_module.logfile
+tmpfile = '/tmp/{0}.{1}.txt'.format(int(time.time() * 1000),
+                                    os.getuid())
 
-#spawn an instance of the shell
-c = pexpect.spawn(def_module.shell, drainpty=True, logfile=logfile)
-atexit.register(force_shell_termination, shell_process=c)
+sendline('echo hi > {0}'.format(tmpfile))
+expect_prompt()
+
+with open(tmpfile) as fd:
+    data = fd.read()
+    assert 'hi' in data
 
 
-assert 1 == 0, "Unimplemented functionality"
+sendline('echo hello > {0}'.format(tmpfile))
+expect_prompt()
+
+with open(tmpfile) as fd:
+    data = fd.read()
+    assert 'hi' not in data
+    assert 'hello' in data
 
 
-shellio.success()
+os.unlink(tmpfile)
+sendline('echo create this > {0}'.format(tmpfile))
+expect_prompt()
+
+with open(tmpfile) as fd:
+    data = fd.read()
+    assert 'hello' not in data
+    assert 'create this' in data
+
+os.unlink(tmpfile)
+
+message = '''Test that file descriptors are not leaked into child
+processes. Only the file descriptors 0, 1, and 2 (stdin, stdout, stderr)
+should be open. If you don't call close() in the proper locations this
+test will fail.
+'''
+sendline('sleep 100 > /dev/null &')
+job = parse_bg_status()
+
+# The given shell code leaves fd 3 open. This should be fixed (marked as clo_exec)
+assert_correct_fds(job.pid, message)
+
+
+test_success()
