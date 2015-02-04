@@ -30,8 +30,9 @@ with open(tmpfile) as fd:
 with open(tmpfile, 'w') as fd:
     fd.write('overwrite')
 
-sendline('wc -c < {0}'.format(tmpfile))
-expect('9')
+sendline('wc < {0}'.format(tmpfile))
+expect(tmpfile)
+expect_regex(r'(0)\s+(1)\s+(9)')
 
 
 os.unlink(tmpfile)
