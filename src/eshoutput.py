@@ -46,3 +46,8 @@ builtin_commands = {
     'fg'   : 'fg %s',
     'bg'   : 'bg %s'
 }
+
+# Uncomment this line if you like stdriver.py to keep a log of everything
+# input and output to the pty in file 'log.txt'
+#
+# logfile=open("log.txt", "w")

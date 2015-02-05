@@ -15,6 +15,9 @@
 void esh_sys_error(char *fmt, ...);
 void esh_sys_fatal_error(char *fmt, ...);
 
+/* Set the 'close-on-exec' flag on fd, return error indicator */
+int esh_set_cloexec(int fd);
+
 /* Get a file descriptor that refers to controlling terminal */
 int esh_sys_tty_getfd(void);
 

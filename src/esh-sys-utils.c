@@ -20,7 +20,7 @@
 
 #include "esh-sys-utils.h"
 
-static const char rcsid [] = "$Id: esh-sys-utils.c,v 1.4 2011/01/21 20:13:06 cs3214 Exp $";
+static const char rcsid [] = "$Id: esh-sys-utils.c,v 1.6 2015/02/04 00:01:13 cs3214 Exp $";
 
 /* Utility function for esh_sys_fatal_error and esh_sys_error */
 static void 
@@ -54,6 +54,18 @@ esh_sys_fatal_error(char *fmt, ...)
     exit(EXIT_FAILURE);
 }
 
+
+/* Set the 'close-on-exec' flag on fd, return error indicator */
+int
+esh_set_cloexec(int fd)
+{
+    int oldflags = fcntl (fd, F_GETFD, 0);
+    if (oldflags < 0)
+        return oldflags;
+
+    return fcntl(fd, F_SETFD, oldflags | FD_CLOEXEC);
+}
+
 static int terminal_fd = -1;           /* the controlling terminal */
 static struct termios saved_tty_state;  /* the state of the terminal when shell
                                            was started. */
@@ -68,6 +80,9 @@ esh_sys_tty_init(void)
     terminal_fd = open(tty = ctermid(NULL), O_RDWR);
     if (terminal_fd == -1)
         esh_sys_fatal_error("opening controlling terminal %s failed: ", tty);
+
+    if (esh_set_cloexec(terminal_fd))
+        esh_sys_fatal_error("cannot mark terminal fd FD_CLOEXEC");
 
     esh_sys_tty_save(&saved_tty_state);
     return &saved_tty_state;
