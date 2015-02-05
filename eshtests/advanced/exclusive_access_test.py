@@ -22,7 +22,7 @@ def expect_stopped(command):
     assert 'stopped' in job.status.lower(), 'Vim not stopped'
     expect_prompt()
 
-
+expect_prompt()
 _, tmpfile = mkstemp()
 # Start nano
 sendline('nano {0}'.format(tmpfile))
@@ -47,6 +47,7 @@ os.unlink(tmpfile)
 # Try to start vim in the background
 # Should stop and wait for exclusive control
 sendline('vim -u NONE &')
+parse_bg_status()
 expect_prompt()
 time.sleep(0.5)
 expect_stopped('vim')
