@@ -27,7 +27,6 @@ assert job.status == 'stopped'
 
 expect_prompt()
 run_builtin('bg', str(job.id))
-status = parse_bg_status()
 expect_prompt()
 
 run_builtin('jobs')
