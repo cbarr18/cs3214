@@ -42,6 +42,6 @@ job = parse_bg_status()
 assert_correct_fds(job.pid, message)
 expect_prompt()
 
-os.killpg(int(job.pid), signal.SIGKILL)
+run_builtin('kill', job.job_id)
 
 test_success()
