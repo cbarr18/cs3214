@@ -48,5 +48,6 @@ job = parse_bg_status()
 # The given shell code leaves fd 3 open. This should be fixed (marked as clo_exec)
 assert_correct_fds(job.pid, message)
 
+os.kill(int(job.pid), signal.SIGKILL)
 
 test_success()

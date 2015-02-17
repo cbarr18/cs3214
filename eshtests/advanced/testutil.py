@@ -3,7 +3,7 @@ Utility module for advanced tests.
 """
 import sys, imp, atexit
 sys.path.append("/home/courses/cs3214/software/pexpect-dpty/");
-import os, re, time, pexpect, shellio, tempfile, proc_check, shutil, stat
+import os, re, time, pexpect, shellio, tempfile, proc_check, shutil, stat, signal
 
 from collections import namedtuple
 

@@ -75,5 +75,11 @@ while count < 4:
         assert stat == 'T'
         count += 1
 
+run_builtin('bg', str(job.id))
+expect_prompt()
+
+run_builtin('kill', str(job.id))
+expect_prompt()
+
 test_success()
 
