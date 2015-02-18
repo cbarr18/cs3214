@@ -98,3 +98,6 @@ def assert_correct_fds(pid, message):
 
     if not (fds == list('012') or (fds == list('0123') and tty)):
         raise Exception('File descriptors leaked into child! Remember to close() all of the pipes and IO redir file descriptors')
+
+def get_shell_pid():
+    return console.pid
