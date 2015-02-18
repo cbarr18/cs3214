@@ -40,14 +40,14 @@ run_builtin('kill', str(job.id))
 expect_prompt()
 
 
-sendline('ps -T -o pid,cmd,stat --no-headers | wc -l')
+sendline('ps T -o pid,cmd,stat --no-headers | wc -l')
 expect('3')
 expect_prompt()
 
 
 sendline('sleep 100 | sleep 99 | sleep 98 | sleep 97 &')
 expect_prompt()
-sendline('ps -T -o pid,stat,cmd --no-headers')
+sendline('ps T -o pid,stat,cmd --no-headers')
 
 count = 0
 while count < 4:
@@ -67,7 +67,7 @@ expect_prompt()
 run_builtin('stop', str(job.id))
 expect_prompt()
 
-sendline('ps -T -o pid,stat,cmd --no-headers')
+sendline('ps T -o pid,stat,cmd --no-headers')
 count = 0
 while count < 4:
     pid, stat, cmd = expect_regex('(\d+)\s+(\w)\s+(\w+)')
