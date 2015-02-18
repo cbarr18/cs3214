@@ -21,6 +21,7 @@ def expect_stopped(command):
     assert command in job.command, 'Job was not: {0}'.format(command)
     assert 'stopped' in job.status.lower(), 'Vim not stopped'
     expect_prompt()
+    return job
 
 expect_prompt()
 _, tmpfile = mkstemp()
@@ -50,10 +51,10 @@ sendline('vim -u NONE &')
 parse_bg_status()
 expect_prompt()
 time.sleep(0.5)
-expect_stopped('vim')
+job = expect_stopped('vim')
 
 # Send vim that was stopped into the foreground
-run_builtin('fg', '1')
+run_builtin('fg', job.id)
 wait_for_fg_child()
 
 
@@ -61,10 +62,10 @@ wait_for_fg_child()
 sendcontrol('z')
 expect_prompt()
 
-expect_stopped('vim')
+job = expect_stopped('vim')
 
 # Send it back into the foreground and try and quit it.
-run_builtin('fg', '1')
+run_builtin('fg', job.id)
 
 wait_for_fg_child()
 
