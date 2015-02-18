@@ -52,6 +52,7 @@ parse_bg_status()
 expect_prompt()
 time.sleep(0.5)
 job = expect_stopped('vim')
+assert job.id == '1', 'There should be no other jobs running so vim should get job id 1'
 
 # Send vim that was stopped into the foreground
 run_builtin('fg', job.id)
@@ -63,6 +64,7 @@ sendcontrol('z')
 expect_prompt()
 
 job = expect_stopped('vim')
+assert job.id == '1', 'There should be no other jobs running so vim should get job id 1'
 
 # Send it back into the foreground and try and quit it.
 run_builtin('fg', job.id)
