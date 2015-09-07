@@ -29,7 +29,7 @@ assert c.expect(def_module.prompt) == 0, "Shell did not print expected prompt"
 # run a command
 c.sendline("/usr/bin/gcc")
 
-assert c.expect("gcc: no input files") == 0, "Shell did not start gcc"
+assert c.expect("gcc: fatal error: no input files") == 0, "Shell did not start gcc"
 
 # make sure shell returns to prompt
 assert c.expect(def_module.prompt) == 0, "Shell did not print expected prompt"
