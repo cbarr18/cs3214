@@ -13,7 +13,9 @@
 /* Print message to stderr, followed by information about current error. 
  * Use like 'printf' */
 void esh_sys_error(char *fmt, ...);
-void esh_sys_fatal_error(char *fmt, ...);
+/* The noreturn attribute tells the compiler this function will not return
+ * see more here (gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html) */
+void esh_sys_fatal_error(char *fmt, ...) __attribute__((__noreturn__));
 
 /* Set the 'close-on-exec' flag on fd, return error indicator */
 int esh_set_cloexec(int fd);
