@@ -20,7 +20,14 @@
 
 #include "esh-sys-utils.h"
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-const-variable"
+#endif
 static const char rcsid [] = "$Id: esh-sys-utils.c,v 1.6 2015/02/04 00:01:13 cs3214 Exp $";
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
 /* Utility function for esh_sys_fatal_error and esh_sys_error */
 static void 
