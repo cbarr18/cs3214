@@ -13,4 +13,4 @@ if [ -f "$1" ]; then
         esac
     done
 fi
-tar -cvf "$1" ${script_dir}/../src/
+tar -cvf "$1" -C ${script_dir}/../ src/
