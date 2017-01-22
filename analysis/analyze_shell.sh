@@ -4,7 +4,7 @@ consent_file="$HOME/._analysis_project_consent"
 if [ ! -f "${consent_file}" ]; then
     read -p "The anonymized results of this analysis may be used for research purposes. Do you consent to allowing your anonymized results to be used to research purposes?[y/n]" yn
     case $yn in
-        [Yy]* ) touch ${consent_file}; break;;
+        [Yy]* ) touch ${consent_file};;
         [Nn]* ) echo "Aborting submission"; exit 4;;
         * ) echo "Please answer y or n.";;
     esac
