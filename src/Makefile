@@ -47,3 +47,6 @@ libesh.a: $(LIB_OBJECTS)
 clean:
 	rm -f $(OBJECTS) $(LIB_OBJECTS) esh esh-grammar.o \
 		$(PLUGIN_SO) core.* libesh.a tests/*.pyc
+
+analysis:
+	../analysis/analyze_shell.sh

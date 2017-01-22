@@ -1,0 +1,10 @@
+These scripts are provided to allow easier analysis of your submission.
+
+Send your program for analysis with:
+    analyze_shell.sh
+
+The script analyze_shell.sh will tar up the src directory and send it for analysis.
+
+The script make_p1_tar.sh is a helper script that makes a tarfile of the src directory at the parameter.
+
+You can use the make_p1_tar.sh with the ~cs3214/bin/analysis-submit.sh script to manually send your tarfile for analysis.
