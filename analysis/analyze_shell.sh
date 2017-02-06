@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 script_dir="${BASH_SOURCE%/*}/"
 consent_file="$HOME/._analysis_project_consent"
+consent_information=$(cat "${script_dir}/consent_information.txt")
 if [ ! -f "${consent_file}" ]; then
-    read -p "The anonymized results of this analysis may be used for research purposes. Do you consent to allowing your anonymized results to be used to research purposes?[y/n]" yn
+    read -p "${consent_information}" yn
     case $yn in
         [Yy]* ) touch ${consent_file};;
-        [Nn]* ) echo "Aborting submission"; exit 4;;
+        [Nn]* ) echo "No consent was given";;
         * ) echo "Please answer y or n.";;
     esac
 fi

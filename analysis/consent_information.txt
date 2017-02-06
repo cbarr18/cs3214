@@ -1,0 +1,19 @@
+This source code analysis tool is a component of an ongoing research study.
+Eligible participants allowing the analysis tool results to be used for research must be 18 or older.
+
+This tool is part of a research study conducted by Eric Williamson and Godmar Back (Department of Computer Science) to identify common bugs in student code for the first project in CS 3214. This study will collect both the source code at time of submission and the analysis results for the given submission as a pair. The results of your specific submission will be available on the course website after submission. If consent is provided, the results of the study will be used by the researchers in scholarly publications as well as identification of bugs common across student submission.
+
+Participation in this study will be submission of your source code for analysis at any point during the development of your first project and agreement to participate. We expect the results of your analysis to be available to you within 5 minutes through the course website.
+
+Participation is voluntary and the research data will have your PID removed before it is analyzed.
+
+Your decision to participate will not affect your class grade. You have a right to withdraw your consent at any time.
+
+Consent to participate in this study is indicated by agreement (typing Y) to this prompt.
+If there are any questions about the study you may contact Eric Williamson at ericrw96@vt.edu or (703)659-3629.
+
+Should you have any questions or concerns about the studys conduct or your rights as a research subject, or need to report a research-related injury or event, you may contact the VT IRB Chair, Dr. David M. Moore at moored@vt.edu or (540) 231-4991.
+
+To consent to allowing the source code analysis be used for research, please type Y or y, any other character will indicate that you decline consent for the analysis tool results to be used for research.
+
+Do you consent?[y/n]
