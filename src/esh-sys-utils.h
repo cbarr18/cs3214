@@ -1,3 +1,5 @@
+#ifndef __ESH_SYS_UTILS_H
+#define __ESH_SYS_UTILS_H
 /*
  * esh - the 'extensible' shell.
  * 
@@ -52,3 +54,5 @@ typedef void (*sa_sigaction_t)(int, siginfo_t *, void *);
 
 /* Install signal handler for signal 'sig' */
 void esh_signal_sethandler(int sig, sa_sigaction_t handler);
+
+#endif //__ESH_SYS_UTILS_H

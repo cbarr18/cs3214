@@ -1,3 +1,5 @@
+#ifndef __ESH_H
+#define __ESH_H
 /*
  * esh - the 'extensible' shell.
  *
@@ -202,3 +204,5 @@ void esh_plugin_initialize(struct esh_shell *shell);
 
 /* List of loaded plugins */
 extern struct list esh_plugin_list;
+
+#endif //__ESH_H
