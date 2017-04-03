@@ -4,5 +4,6 @@
 8 basic/fg_test.py
 8 basic/jobs_test.py
 7 basic/stop_test.py
-8 basic/bg_test.py
+4 basic/running_a_background_task_test.py
+4 basic/bg_test.py
 7 basic/kill_test.py

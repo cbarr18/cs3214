@@ -54,6 +54,7 @@ assert c.expect(def_module.prompt) == 0, "Shell did not print expected prompt af
 assert not proc_check.check_pid_fgpgrp(pid), \
     'Error: sleep is in the foreground process group when it should be in the background'
 
+# sleep should still be running in the background at this point as it has not been 30 seconds
 assert proc_check.check_pid_status(pid, 'S'), 'Error: sleep is not running when it should be running in the background'
 
 # exit the shell
