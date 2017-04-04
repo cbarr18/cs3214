@@ -1,7 +1,8 @@
 #!/usr/bin/python
 #
 # stop_test: tests the stop command
-# 
+#
+# To pass this test you should first be able to pass the running_a_background_task_test
 # Test the stop command for stopping a process by its pid.
 # Requires the following commands to be implemented
 # or otherwise usable:
@@ -65,7 +66,7 @@ assert not proc_check.check_pid_fgpgrp(pid), \
                             'Error: process is in the foreground'
 assert proc_check.check_pid_status(pid, 'T'), 'Error: process not stopped'
 
-#check the prompt prints
+#check the prompt prints after the stop command stops the process
 assert c.expect(def_module.prompt) == 0, "Shell did not print expected prompt"
 
 
