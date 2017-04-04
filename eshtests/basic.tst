@@ -9,3 +9,4 @@
 7 basic/stop_test.py
 3 basic/bg_test.py
 7 basic/kill_test.py
+1 basic/file_descriptor_test.py
