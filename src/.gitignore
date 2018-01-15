@@ -1,0 +1,7 @@
+# Compiled binary
+./esh
+
+# Object files
+*.o
+*.so
+*.a
