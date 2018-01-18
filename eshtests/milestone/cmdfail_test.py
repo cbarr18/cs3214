@@ -41,8 +41,9 @@ assert c.expect(def_module.prompt) == 0, "Shell did not print expected prompt"
 # run a non-existent command
 c.sendline("this_command_does_not_exist")
 
+time.sleep(2)
 # this should fail somehow and not leave any children behind
-proc_check.count_children_timeout(c, 0, 2)
+proc_check.count_active_children(c, 0)
 
 # eventually, the shell should go back to the prompt
 assert c.expect(def_module.prompt) == 0, "Shell did not print expected prompt"
