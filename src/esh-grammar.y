@@ -81,9 +81,6 @@ make_esh_command(struct cmd_helper *cmd)
 /* Called by parser when command line is complete */
 static void cmdline_complete(struct esh_command_line *);
 
-/* work-around for bug in flex 2.31 and later */
-static void yyunput (int c,char *buf_ptr  ) __attribute__((unused));
-
 %}
 
 /* LALR stack types */
@@ -212,6 +209,11 @@ static char * inputline;    /* currently processed input line */
 #define YY_NO_UNPUT
 #define YY_NO_INPUT
 #include "lex.yy.c"
+
+#if YY_FLEX_MINOR_VERSION < 6
+/* work-around for bug in flex 2.5.31 and prior to 2.6 */
+static void yyunput (int c,char *buf_ptr  ) __attribute__((unused));
+#endif
 
 static void
 p_error(char *msg) 
