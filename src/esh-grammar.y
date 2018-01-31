@@ -81,8 +81,10 @@ make_esh_command(struct cmd_helper *cmd)
 /* Called by parser when command line is complete */
 static void cmdline_complete(struct esh_command_line *);
 
-/* work-around for bug in flex 2.31 and later */
-static void yyunput (int c,char *buf_ptr  ) __attribute__((unused));
+/* work-around for bug in flex 2.5.31 prior to 2.6 */
+#if YYPATCH <= 20130304
+static void yyunput (int c, char *buf_ptr) __attribute__((unused));
+#endif
 
 %}
 
